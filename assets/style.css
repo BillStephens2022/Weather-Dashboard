@@ -1,3 +1,28 @@
+:root {
+    --blue: rgb(54, 54, 104);
+}
+
+
 body {
-    background-color: blue;
+    background-color: var(--blue);
+    
+
+}
+
+h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    color: var(--blue);
+}
+
+h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+    color: var(--blue);
+}
+
+.btn {
+    background-color: rgb(27, 169, 169);
+    color: var(--blue);
+    border: solid white 1px;
 }
