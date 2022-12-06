@@ -1,18 +1,26 @@
 :root {
     --blue: rgb(54, 54, 104);
+    --darkgray: rgb(69, 60, 60);
 }
 
 
-body {
+html {
     background-color: var(--blue);
-    
+}
 
+main {
+    background-color: var(--blue);
+}
+
+header {
+    color: var(--blue);
 }
 
 h1 {
     font-family: 'Montserrat', sans-serif;
     font-weight: 900;
     color: var(--blue);
+    font-size: 2.5em;
 }
 
 h2 {
@@ -21,8 +29,19 @@ h2 {
     color: var(--blue);
 }
 
+.search-container {
+    padding-top: 1.5rem;
+}
+
 .btn {
-    background-color: rgb(27, 169, 169);
-    color: var(--blue);
+    background-color: var(--darkgray);
+    color: white;
     border: solid white 1px;
 }
+
+p {
+    font-size: 1em;
+}
+
+
+

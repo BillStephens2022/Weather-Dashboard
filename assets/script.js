@@ -11,11 +11,12 @@ $('#currentDay').text(currentDay);
 
 var titleEl = $("#title");
 var cityEl = document.createElement('h3');
+var currentWeatherIconEl = document.createElement('img');
 var currentTempEl = document.createElement('p');
 var currentHumidityEl = document.createElement('p');
 var currentWindEl = document.createElement('p');
 var currentHumidityEl = document.createElement('p');
-var currentWeatherIconEl = document.createElement('img');
+
 
 
 $("#citySearch").click(function(event) {
@@ -39,22 +40,28 @@ $("#citySearch").click(function(event) {
       })
 
       .then(function (response) {
-        console.log(response);
+        
         var currentTemp = response.main.temp;
         var currentWind = response.wind.speed;
         var currentHumidity = response.main.humidity;
         var currentWeatherIcon = response.weather[0].icon;
+        
         var currentWeatherIconURL = "http://openweathermap.org/img/wn/" + currentWeatherIcon + "@2x.png";
-        console.log(currentWeatherIconURL);
-        titleEl.append(cityEl);
-        titleEl.append(currentTempEl);
-        titleEl.append(currentWindEl);
-        titleEl.append(currentHumidityEl);
-        cityEl.textContent = cityName;
-        currentWeatherIconEl.src = currentWeatherIconURL;
-        currentTempEl.textContent = `Temp: ${currentTemp}°F`;
-        currentHumidityEl.textContent = `Humidity: ${currentHumidity}%`;
-        currentWindEl.textContent = `Wind: ${currentWind} MPH`;
+        
+        titleEl.append(`
+        <div class="col-md">
+            <div class = card text-white bg-primary">
+                <div class = "card-body">
+                    <h3>${cityName}</h3>
+                    <h4>${currentDay}
+                    <img src=${currentWeatherIconURL} alt="weather icon">
+                    <p>Temp: ${currentTemp}°F</p>
+                    <p>Wind: ${currentWind}</p>
+                    <p>Humidity: ${currentHumidity}%</p>
+                </div>
+            </div>
+        </div>
+        `);
       });
       
       
