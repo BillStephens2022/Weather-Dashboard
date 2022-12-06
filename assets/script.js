@@ -2,22 +2,11 @@
 const apiKey = "9c2fb74325cdd1b556e43b8c873a760b";
 const unit = "imperial";
 
-
-
-var currentDay = dayjs().format('MMMM DD, YYYY');
+var currentDay = dayjs().format('MMMM DD, YYYY, hh:mm a');
 $('#currentDay').text(currentDay);
 
-
-
 var titleEl = $("#title");
-var cityEl = document.createElement('h3');
-var currentWeatherIconEl = document.createElement('img');
-var currentTempEl = document.createElement('p');
-var currentHumidityEl = document.createElement('p');
-var currentWindEl = document.createElement('p');
-var currentHumidityEl = document.createElement('p');
-
-
+var forecastEl = $("#forecast")
 
 $("#citySearch").click(function(event) {
     event.preventDefault();
@@ -50,13 +39,12 @@ $("#citySearch").click(function(event) {
         
         titleEl.append(`
         <div class="col-md">
-            <div class = card text-white bg-primary">
+            <div class = "card card-current">
                 <div class = "card-body">
                     <h3>${cityName}</h3>
-                    <h4>${currentDay}
-                    <img src=${currentWeatherIconURL} alt="weather icon">
+                    <img id="weather-icon" src=${currentWeatherIconURL} alt="weather icon">
                     <p>Temp: ${currentTemp}°F</p>
-                    <p>Wind: ${currentWind}</p>
+                    <p>Wind: ${currentWind} MPH</p>
                     <p>Humidity: ${currentHumidity}%</p>
                 </div>
             </div>
@@ -69,8 +57,8 @@ $("#citySearch").click(function(event) {
   }
 
   function getFiveDayForecast(cityName, unit, apiKey) {
-    
-    const requestUrlFiveDay = "https://api.openweathermap.org/data/2.5/forecast?lat=44.34&lon=10.99" + "&units" + unit + "&appid=" + apiKey;
+    forecastEl.empty();
+    const requestUrlFiveDay = "https://api.openweathermap.org/data/2.5/forecast?lat=48.86&lon=2.35&units=" + unit + "&appid=" + apiKey;
     console.log(requestUrlFiveDay);
 
     fetch(requestUrlFiveDay)
@@ -80,7 +68,37 @@ $("#citySearch").click(function(event) {
         return response.json();
       })
 
-      .then(function (data) {
-        console.log(data);
+      .then(function (response) {
+        console.log(response);
+        forecastEl.empty();
+        
+        for (var i = 0; i < 40; i++) {
+            console.log(response.list[i].dt_txt);
+            if (response.list[i].dt_txt.includes("12:00:00")) {
+                console.log("hit");    
+                var forecastDate = dayjs.unix(response.list[i].dt).format('MMM D');
+                var temp = response.list[i].main.temp;
+                var wind = response.list[i].wind.speed;
+                var humidity = response.list[i].main.humidity;
+                var weatherIcon = response.list[i].weather[0].icon;
+                var weatherIconURL = "http://openweathermap.org/img/wn/" + weatherIcon + "@2x.png";
+                forecastEl.append(`
+                
+                <div class = "card card-forecast">
+                    <div class = "card-body">
+                        <div class = "card-header">
+                            <h3>${cityName}</h3>
+                            <h4>${forecastDate}<h4>
+                            <img id="weather-icon2" src=${weatherIconURL} alt="weather icon">
+                        </div>
+                        
+                        <p>Temp: ${temp}°F</p>
+                        <p>Wind: ${wind} MPH</p>
+                        <p>Humidity: ${humidity}%</p>
+                    </div>
+                </div>           
+                `);
+            };
+        } 
       });
   }
