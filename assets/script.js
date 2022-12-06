@@ -2,26 +2,31 @@
 const apiKey = "9c2fb74325cdd1b556e43b8c873a760b";
 const unit = "imperial";
 
+// Pulls current Day from dateJS and places it into an HTML element
 var currentDay = dayjs().format('MMMM DD, YYYY, hh:mm a');
 $('#currentDay').text(currentDay);
 
+// declare vairables for certain HTML elements
 var titleEl = $("#title");
 var currentConditionsEl = $("#current-conditions");
 var forecastEl = $("#forecast");
 var responseTextEl = $("<h4>");
 var buttonsEl = ("#buttons");
+
+/* declare variable for cities array which will be saved to local storage and rendered into buttons so the user
+can easily pull up weather conditions for their favorite cities.  */
+
 var cities = [];
 
+//Clicking on the search button will trigger pull to the Open Weather API to get both current weather and forecast
 $("#citySearch").click(function(event) {
     event.preventDefault();
     var cityName = $('#cityName').val().trim();
     getCurrentWeather(cityName, unit, apiKey);
     getFiveDayForecast(cityName, unit, apiKey);
-    
   });
 
-  
-
+  // function to render buttons as user adds new cities
   function createButtons() {
     $('#buttons').empty();
     for (var i = 0; i < cities.length; i++) {
@@ -32,6 +37,20 @@ $("#citySearch").click(function(event) {
       $('#buttons').append(cityButton);
     };
   }
+
+  // function to handle clicks on each of the cities' rendered buttons
+  
+  $(buttonsEl).on('click', function(event) {
+    event.preventDefault();
+    var cityButtonPressed = event.target.textContent;
+    console.log(cityButtonPressed);
+    getCurrentWeather(cityButtonPressed, unit, apiKey);
+    getFiveDayForecast(cityButtonPressed, unit, apiKey);
+  });
+
+  /* function to fetch data from the Open Weather API. Error handling will render a message (which will blink via CSS). 
+  Error message will be removed once a valid city is entered.  Once valid city is entered, error message will be removed, 
+  and HTML will be rendered to show the current weather conditions for that city.  */
 
   function getCurrentWeather(cityName, unit, apiKey) {
     
@@ -83,6 +102,9 @@ $("#citySearch").click(function(event) {
       
   }
 
+  /* function to fetch data from the Open Weather API. This pulls 16 day forecast, and for loop will render HTML to
+  to show a card for each day. */
+
   function getFiveDayForecast(cityName, unit, apiKey) {
     forecastEl.empty();
     const requestUrlFiveDay = "https://api.openweathermap.org/data/2.5/forecast?lat=48.86&lon=2.35&units=" + unit + "&appid=" + apiKey;
@@ -96,9 +118,11 @@ $("#citySearch").click(function(event) {
       })
 
       .then(function (response) {
-        console.log(response);
         
-        
+      /* Since it shows the weather forecast for every 3 hours, the if statement will 
+      ensure that only data points at 12:00:00 are picked up each day.  Index goes to 40
+      on the for loop since there are 8 3-hour periods per day x 5 days = 40. */
+      
         for (var i = 0; i < 40; i++) {
             
             if (response.list[i].dt_txt.includes("12:00:00")) {
