@@ -6,6 +6,7 @@ var currentDay = dayjs().format('MMMM DD, YYYY, hh:mm a');
 $('#currentDay').text(currentDay);
 
 var titleEl = $("#title");
+var currentConditionsEl = $("#current-conditions");
 var forecastEl = $("#forecast")
 
 $("#citySearch").click(function(event) {
@@ -19,6 +20,7 @@ $("#citySearch").click(function(event) {
   function getCurrentWeather(cityName, unit, apiKey) {
     
     const requestUrlCurrentDay = "https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&units=" + unit + "&appid=" + apiKey;
+    currentConditionsEl.empty();
     console.log(requestUrlCurrentDay);
 
     fetch(requestUrlCurrentDay)
@@ -37,7 +39,7 @@ $("#citySearch").click(function(event) {
         
         var currentWeatherIconURL = "http://openweathermap.org/img/wn/" + currentWeatherIcon + "@2x.png";
         
-        titleEl.append(`
+        currentConditionsEl.append(`
         <div class="col-md">
             <div class = "card card-current">
                 <div class = "card-body">
@@ -70,7 +72,7 @@ $("#citySearch").click(function(event) {
 
       .then(function (response) {
         console.log(response);
-        forecastEl.empty();
+        
         
         for (var i = 0; i < 40; i++) {
             console.log(response.list[i].dt_txt);
