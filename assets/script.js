@@ -66,8 +66,11 @@ $("#citySearch").click(function(event) {
           
         } else {
           responseTextEl.empty();
-          cities.push(cityName);
-          createButtons();
+          if (!cities.includes(cityName)) {
+            cities.push(cityName);
+            createButtons();
+          };
+          
           return response.json();
         }
       })
