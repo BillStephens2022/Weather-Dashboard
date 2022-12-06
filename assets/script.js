@@ -7,51 +7,76 @@ $('#currentDay').text(currentDay);
 
 var titleEl = $("#title");
 var currentConditionsEl = $("#current-conditions");
-var forecastEl = $("#forecast")
+var forecastEl = $("#forecast");
+var responseTextEl = $("<h4>");
+var buttonsEl = ("#buttons");
+var cities = [];
 
 $("#citySearch").click(function(event) {
     event.preventDefault();
-    var cityName = $('#cityName').val();
-    console.log(cityName);
+    var cityName = $('#cityName').val().trim();
     getCurrentWeather(cityName, unit, apiKey);
     getFiveDayForecast(cityName, unit, apiKey);
+    
   });
+
+  
+
+  function createButtons() {
+    $('#buttons').empty();
+    for (var i = 0; i < cities.length; i++) {
+      var cityButton = $("<button>");
+      cityButton.addClass("btn city-btn");
+      cityButton.attr('data-name', cities[i]);
+      cityButton.text(cities[i]);
+      $('#buttons').append(cityButton);
+    };
+  }
 
   function getCurrentWeather(cityName, unit, apiKey) {
     
     const requestUrlCurrentDay = "https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&units=" + unit + "&appid=" + apiKey;
     currentConditionsEl.empty();
-    console.log(requestUrlCurrentDay);
 
     fetch(requestUrlCurrentDay)
 
       .then(function (response) {
-        
-        return response.json();
+        if (response.status !== 200) {
+          $('.response').append(responseTextEl);
+          responseTextEl.text("Input Error!  Please enter a valid city");
+          
+        } else {
+          responseTextEl.empty();
+          cities.push(cityName);
+          createButtons();
+          return response.json();
+        }
       })
 
-      .then(function (response) {
-        
-        var currentTemp = response.main.temp;
-        var currentWind = response.wind.speed;
-        var currentHumidity = response.main.humidity;
-        var currentWeatherIcon = response.weather[0].icon;
-        
-        var currentWeatherIconURL = "http://openweathermap.org/img/wn/" + currentWeatherIcon + "@2x.png";
-        
-        currentConditionsEl.append(`
-        <div class="col-md">
-            <div class = "card card-current">
-                <div class = "card-body">
-                    <h3>${cityName}</h3>
-                    <img id="weather-icon" src=${currentWeatherIconURL} alt="weather icon">
-                    <p>Temp: ${currentTemp}°F</p>
-                    <p>Wind: ${currentWind} MPH</p>
-                    <p>Humidity: ${currentHumidity}%</p>
-                </div>
-            </div>
-        </div>
-        `);
+      .then(function (data) {
+          if(data) {
+
+          var currentTemp = data.main.temp;
+          var currentWind = data.wind.speed;
+          var currentHumidity = data.main.humidity;
+          var currentWeatherIcon = data.weather[0].icon;
+          
+          var currentWeatherIconURL = "http://openweathermap.org/img/wn/" + currentWeatherIcon + "@2x.png";
+          
+          currentConditionsEl.append(`
+          <div class="col-md">
+              <div class = "card card-current">
+                  <div class = "card-body">
+                      <h3>${cityName}</h3>
+                      <img id="weather-icon" src=${currentWeatherIconURL} alt="weather icon">
+                      <p>Temp: ${currentTemp}°F</p>
+                      <p>Wind: ${currentWind} MPH</p>
+                      <p>Humidity: ${currentHumidity}%</p>
+                  </div>
+              </div>
+          </div>
+          `);
+        }
       });
       
       
@@ -61,7 +86,7 @@ $("#citySearch").click(function(event) {
   function getFiveDayForecast(cityName, unit, apiKey) {
     forecastEl.empty();
     const requestUrlFiveDay = "https://api.openweathermap.org/data/2.5/forecast?lat=48.86&lon=2.35&units=" + unit + "&appid=" + apiKey;
-    console.log(requestUrlFiveDay);
+    
 
     fetch(requestUrlFiveDay)
 
@@ -75,9 +100,9 @@ $("#citySearch").click(function(event) {
         
         
         for (var i = 0; i < 40; i++) {
-            console.log(response.list[i].dt_txt);
+            
             if (response.list[i].dt_txt.includes("12:00:00")) {
-                console.log("hit");    
+                   
                 var forecastDate = dayjs.unix(response.list[i].dt).format('MMM D');
                 var temp = response.list[i].main.temp;
                 var wind = response.list[i].wind.speed;

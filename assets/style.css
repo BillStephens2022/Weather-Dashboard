@@ -85,4 +85,21 @@ h2 {
     border-radius: 5%;
 }    
 
+.city-btn {
+    display: flex;
+    flex-direction: column;
+    margin: 10px 0;
+}
 
+.response h4 {
+    color: red;
+    font-size: 2rem;
+    animation: blinker 1s step-start infinite;
+    margin-left: 10px;
+}
+
+@keyframes blinker {
+    50% {
+      color: white;
+    }
+  }
