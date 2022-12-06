@@ -68,6 +68,9 @@ $("#citySearch").click(function(event) {
           responseTextEl.empty();
           if (!cities.includes(cityName)) {
             cities.push(cityName);
+            if (cities.length > 5) {
+              cities.shift();
+            };
             createButtons();
           };
           
