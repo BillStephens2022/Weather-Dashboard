@@ -41,6 +41,8 @@ $("#citySearch").click(function(event) {
     createButtons();
   }
 
+  // function to retrieve saved searches from local storage
+
   function getLocalStorage() {
     return JSON.parse(localStorage.getItem("cities")) || [];
   };
@@ -67,7 +69,6 @@ $("#citySearch").click(function(event) {
     event.preventDefault();
     var cityButtonPressed = event.target.textContent;
     getCoordinates(cityButtonPressed);
-    
   });
 
   //function to convert city names to coordinates using OpenWeather API
@@ -76,6 +77,9 @@ $("#citySearch").click(function(event) {
     const requestUrlCoordinates = "http://api.openweathermap.org/geo/1.0/direct?q=" + cityName + "&limit=1&appid=" + apiKey;
     
     fetch(requestUrlCoordinates)
+      /* if error with response, HTML message is rendered for the user to enter a valid city name. the invalid entry is removed from the cities 
+      arrays so that a button won't get rendered and won't get saved in local storage. If no error, data is returned and any error messages are cleared 
+      from the HTML. */
 
       .then(function (response) {
         if (response.status !== 200) {
@@ -83,13 +87,16 @@ $("#citySearch").click(function(event) {
           responseTextEl.text("Input Error!  Please enter a valid city");
           cities.pop();
           storedCities.pop();
-          init();
+          createButtons();
         } else {
           responseTextEl.empty();
           };
           return response.json();
         }
       )
+      /* After data received, the latitude and longitude are saved into variables and the "getCurrentWeather" and "getFiveDayForecast" 
+      functions are called using the coordinates received as well as the other parameters needed for the API calls.  If invalid city is entered
+      the API call still receives an empty array - if this happens, an error message is displayed for the user to add a valid city. */
         .then(function (data) {
           if(data.length !== 0) {
             var latitude = data[0].lat;
@@ -101,14 +108,15 @@ $("#citySearch").click(function(event) {
             responseTextEl.text("Input Error!  Please enter a valid city");
             cities.pop();
             storedCities.pop();
-            init();
+            createButtons();
           };
         });
   }
 
-  /* function to fetch data from the Open Weather API. Error handling will render a message (which will blink via CSS). 
-  Error message will be removed once a valid city is entered.  Once valid city is entered, error message will be removed, 
-  and HTML will be rendered to show the current weather conditions for that city.  */
+  /* function to fetch current weather data from the Open Weather API. Error handling will render a message 
+  (which will blink via CSS). Error message will be removed once a valid city is entered.  Once valid city is 
+  entered, error message will be removed, and HTML will be rendered to show the current weather conditions 
+  for that city.  If valid city is entered, HTML will be rendered for a card showing the current conditions. */
 
   function getCurrentWeather(latitude, longitude, unit, apiKey, cityName) {
     const requestUrlCurrentDay = "https://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&units=" + unit + "&appid=" + apiKey;
@@ -120,7 +128,7 @@ $("#citySearch").click(function(event) {
           responseTextEl.text("Input Error!  Please enter a valid city");
           cities.pop();
           storedCities.pop();
-          init();
+          createButtons();
         } else {
           responseTextEl.empty();
           };

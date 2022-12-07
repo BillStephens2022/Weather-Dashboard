@@ -20,7 +20,6 @@ main {
 header {
     color: var(--blue);
     background: linear-gradient(45deg, var(--lightblue) 40%, var(--darkgray) 50%);
-    /* background-color: rgb(77, 77, 124); */
 }
 
 .mb-4 {
@@ -99,6 +98,8 @@ h2 {
     font-weight: 900;
 }
 
+/* blinker animation used for the error message to bring attention to it */
+
 .response h4 {
     color: rgb(156, 4, 4);
     font-size: 2rem;
@@ -113,6 +114,8 @@ h2 {
   }
 
 
+  /* animation added for cloud to move across screen */
+  
   #title-image-2 {
     position: absolute;
     width: 25%;
