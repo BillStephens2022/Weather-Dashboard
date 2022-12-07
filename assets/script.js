@@ -20,7 +20,6 @@ var cities = getLocalStorage();
 
 var storedCities = JSON.parse(localStorage.getItem("cities"));
 
-
 init();
 
 //Clicking on the search button will trigger pull to the Open Weather API to get both current weather and forecast
@@ -36,8 +35,7 @@ $("#citySearch").click(function(event) {
     cities.push[cityName];
     localStorage.setItem("cities", JSON.stringify(cities));
     storedCities = JSON.parse(localStorage.getItem("cities"));
-    getCurrentWeather(cityName, unit, apiKey);
-    getFiveDayForecast(cityName, unit, apiKey);
+    getCoordinates(cityName);
   });
 
   function init() {
@@ -69,17 +67,62 @@ $("#citySearch").click(function(event) {
   $(buttonsEl).on('click', function(event) {
     event.preventDefault();
     var cityButtonPressed = event.target.textContent;
-    getCurrentWeather(cityButtonPressed, unit, apiKey);
-    getFiveDayForecast(cityButtonPressed, unit, apiKey);
+    getCoordinates(cityButtonPressed);
+    
   });
+
+  //function to convert city names to coordinates using OpenWeather API
+
+  function getCoordinates(cityName) {
+    console.log(cityName);
+    const requestUrlCoordinates = "http://api.openweathermap.org/geo/1.0/direct?q=" + cityName + "&limit=1&appid=" + apiKey;
+    console.log(requestUrlCoordinates);
+    
+    fetch(requestUrlCoordinates)
+
+      .then(function (response) {
+        console.log(response);
+        if (response.status !== 200) {
+          $('.response').append(responseTextEl);
+          responseTextEl.text("Input Error!  Please enter a valid city");
+          cities.pop();
+          storedCities.pop();
+          init();
+        } else {
+          responseTextEl.empty();
+          };
+          return response.json();
+        }
+      )
+        .then(function (data) {
+          console.log(data);
+          console.log(data.length === 0);
+          if(data.length !== 0) {
+            var latitude = data[0].lat;
+            var longitude = data[0].lon;
+            getCurrentWeather(latitude, longitude, unit, apiKey, cityName);
+            getFiveDayForecast(latitude, longitude, unit, apiKey, cityName);
+          } else {
+            $('.response').append(responseTextEl);
+            responseTextEl.text("Input Error!  Please enter a valid city");
+            cities.pop();
+            storedCities.pop();
+            init();
+          };
+        });
+  }
 
   /* function to fetch data from the Open Weather API. Error handling will render a message (which will blink via CSS). 
   Error message will be removed once a valid city is entered.  Once valid city is entered, error message will be removed, 
   and HTML will be rendered to show the current weather conditions for that city.  */
 
-  function getCurrentWeather(cityName, unit, apiKey) {
-    
-    const requestUrlCurrentDay = "https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&units=" + unit + "&appid=" + apiKey;
+  function getCurrentWeather(latitude, longitude, unit, apiKey, cityName) {
+    console.log("latitude = " + latitude);
+    console.log("longitude = " + longitude);
+    console.log("unit = " + unit);
+    console.log("apiKey = " + apiKey);
+    console.log("cityName = " + cityName);
+    const requestUrlCurrentDay = "https://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&units=" + unit + "&appid=" + apiKey;
     
     currentConditionsEl.empty();
 
@@ -110,13 +153,14 @@ $("#citySearch").click(function(event) {
           var currentWeatherIcon = data.weather[0].icon;
           
           var currentWeatherIconURL = "http://openweathermap.org/img/wn/" + currentWeatherIcon + "@2x.png";
-          
+         
+          console.log(cityName);
           currentConditionsEl.append(`
           <div class="col-md">
               <div class = "card card-current">
                   <div class = "card-body">
                       <h3>${cityName}</h3>
-                      <img id="weather-icon" src=${currentWeatherIconURL} alt="weather icon">
+                      <img id="weather-icon" src=${currentWeatherIconURL} alt="weather icon">                   
                       <p>Temp: ${currentTemp}°F</p>
                       <p>Wind: ${currentWind} MPH</p>
                       <p>Humidity: ${currentHumidity}%</p>
@@ -131,9 +175,9 @@ $("#citySearch").click(function(event) {
   /* function to fetch data from the Open Weather API. This pulls 16 day forecast, and for loop will render HTML to
   to show a card for each day. */
 
-  function getFiveDayForecast(cityName, unit, apiKey) {
+  function getFiveDayForecast(latitude, longitude, unit, apiKey, cityName) {
     forecastEl.empty();
-    const requestUrlFiveDay = "https://api.openweathermap.org/data/2.5/forecast?lat=48.86&lon=2.35&units=" + unit + "&appid=" + apiKey;
+    const requestUrlFiveDay = "https://api.openweathermap.org/data/2.5/forecast?lat=" + latitude + "&lon=" + longitude + "&units=" + unit + "&appid=" + apiKey;
     
 
     fetch(requestUrlFiveDay)
@@ -178,4 +222,5 @@ $("#citySearch").click(function(event) {
             };
         } 
       });
-  }
+    }
+  

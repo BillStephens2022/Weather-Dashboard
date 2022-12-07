@@ -4,6 +4,7 @@
     --lightblue: rgb(4, 94, 123);
     --white: #fff;
     --border: solid #fff 2px;
+    --skyblue: #AFDCEB;
 }
 
 
@@ -18,6 +19,7 @@ main {
 
 header {
     color: var(--blue);
+    background-color: rgb(77, 77, 124);
 }
 
 .mb-4 {
@@ -27,14 +29,14 @@ header {
 h1 {
     font-family: 'Montserrat', sans-serif;
     font-weight: 900;
-    color: var(--blue);
+    color: var(--white);
     font-size: 2.5em;
 }
 
 h2 {
     font-family: 'Montserrat', sans-serif;
     font-weight: 400;
-    color: var(--blue);
+    color: var(--white);
 }
 
 .search-container {
@@ -48,8 +50,8 @@ h2 {
 }
 
 .card-current {
-    background-color: var(--blue);
-    color: white;
+    background-color: var(--white);
+    color: var(--blue);
 }
 
 .card-current p {
@@ -89,10 +91,15 @@ h2 {
     display: flex;
     flex-direction: column;
     margin: 10px 0;
+    background-color: var(--white);
+    color: var(--blue);
+    border: solid var(--darkgray) 2px;
+    font-family: Ubuntu;
+    font-weight: 900;
 }
 
 .response h4 {
-    color: red;
+    color: rgb(156, 4, 4);
     font-size: 2rem;
     animation: blinker 1s step-start infinite;
     margin-left: 10px;
@@ -101,5 +108,21 @@ h2 {
 @keyframes blinker {
     50% {
       color: white;
+    }
+  }
+
+
+  #title-image-2 {
+    position: absolute;
+    width: 25%;
+    animation:  moveImgRight 7s ease-out infinite;
+  }
+
+  @keyframes moveImgRight{
+    0% {
+    transform: translateX(-700%) translateY(-200%);
+    }
+    100% {
+    transform: translateX(700%) translateY(-200%);
     }
   }
