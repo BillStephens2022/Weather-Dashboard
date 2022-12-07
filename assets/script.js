@@ -70,7 +70,7 @@ $("#citySearch").click(function(event) {
   //function to convert city names to coordinates using OpenWeather API
 
   function getCoordinates(cityName) {
-    const requestUrlCoordinates = "http://api.openweathermap.org/geo/1.0/direct?q=" + cityName + "&limit=1&appid=" + apiKey;
+    const requestUrlCoordinates = "https://api.openweathermap.org/geo/1.0/direct?q=" + cityName + "&limit=1&appid=" + apiKey;
     
     fetch(requestUrlCoordinates)
       /* if error with response, HTML message is rendered for the user to enter a valid city name. the invalid entry is removed from the cities 
@@ -138,7 +138,7 @@ $("#citySearch").click(function(event) {
           var currentWind = data.wind.speed;
           var currentHumidity = data.main.humidity;
           var currentWeatherIcon = data.weather[0].icon;
-          var currentWeatherIconURL = "http://openweathermap.org/img/wn/" + currentWeatherIcon + "@2x.png";
+          var currentWeatherIconURL = "https://openweathermap.org/img/wn/" + currentWeatherIcon + "@2x.png";
           currentConditionsEl.append(`
           <div class="col-md">
               <div class = "card card-current">
@@ -186,7 +186,7 @@ $("#citySearch").click(function(event) {
                 var wind = response.list[i].wind.speed;
                 var humidity = response.list[i].main.humidity;
                 var weatherIcon = response.list[i].weather[0].icon;
-                var weatherIconURL = "http://openweathermap.org/img/wn/" + weatherIcon + "@2x.png";
+                var weatherIconURL = "https://openweathermap.org/img/wn/" + weatherIcon + "@2x.png";
                 forecastEl.append(`
                 
                 <div class = "card card-forecast">
