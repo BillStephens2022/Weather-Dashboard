@@ -2,7 +2,8 @@
     --blue: rgb(54, 54, 104);
     --darkgray: rgb(69, 60, 60);
     --lightblue: rgb(4, 94, 123);
-    --white: #fff;
+    --white: whitesmoke;
+    --gold: rgb(211, 173, 19);
     --border: solid #fff 2px;
     --skyblue: #AFDCEB;
 }
@@ -50,7 +51,7 @@ h2 {
 }
 
 .card-current {
-    background-color: var(--white);
+    background-color: var(--gold);
     color: var(--blue);
 }
 
@@ -59,8 +60,8 @@ h2 {
 }
 
 .card-header {
-    background-color: var(--blue);
-    color: var(--white);
+    background-color: var(--skyblue);
+    color: var(--blue);
     border-radius: 5% !important;
 }
 
@@ -115,7 +116,7 @@ h2 {
 
 
   /* animation added for cloud to move across screen */
-  
+
   #title-image-2 {
     position: absolute;
     width: 25%;

@@ -37,10 +37,6 @@ $("#citySearch").click(function(event) {
     getCoordinates(cityName);
   });
 
-  function init() {
-    createButtons();
-  }
-
   // function to retrieve saved searches from local storage
 
   function getLocalStorage() {
@@ -136,7 +132,7 @@ $("#citySearch").click(function(event) {
         }
       )
       .then(function (data) {
-          init();
+          createButtons();
           if(data) {
           var currentTemp = data.main.temp;
           var currentWind = data.wind.speed;
