@@ -19,7 +19,8 @@ main {
 
 header {
     color: var(--blue);
-    background-color: rgb(77, 77, 124);
+    background: linear-gradient(45deg, var(--lightblue) 40%, var(--darkgray) 50%);
+    /* background-color: rgb(77, 77, 124); */
 }
 
 .mb-4 {
@@ -115,14 +116,14 @@ h2 {
   #title-image-2 {
     position: absolute;
     width: 25%;
-    animation:  moveImgRight 7s ease-out infinite;
+    animation:  moveImgRight 5s ease-out infinite;
   }
 
   @keyframes moveImgRight{
     0% {
-    transform: translateX(-700%) translateY(-200%);
+    transform: translateX(-350%) translateY(-20%);
     }
     100% {
-    transform: translateX(700%) translateY(-200%);
+    transform: translateX(350%) translateY(-250%);
     }
   }

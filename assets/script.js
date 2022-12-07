@@ -17,10 +17,9 @@ var buttonsEl = ("#buttons");
 can easily pull up weather conditions for their favorite cities.  */
 
 var cities = getLocalStorage();
-
 var storedCities = JSON.parse(localStorage.getItem("cities"));
 
-init();
+createButtons();
 
 //Clicking on the search button will trigger pull to the Open Weather API to get both current weather and forecast
 $("#citySearch").click(function(event) {
@@ -74,14 +73,11 @@ $("#citySearch").click(function(event) {
   //function to convert city names to coordinates using OpenWeather API
 
   function getCoordinates(cityName) {
-    console.log(cityName);
     const requestUrlCoordinates = "http://api.openweathermap.org/geo/1.0/direct?q=" + cityName + "&limit=1&appid=" + apiKey;
-    console.log(requestUrlCoordinates);
     
     fetch(requestUrlCoordinates)
 
       .then(function (response) {
-        console.log(response);
         if (response.status !== 200) {
           $('.response').append(responseTextEl);
           responseTextEl.text("Input Error!  Please enter a valid city");
@@ -95,8 +91,6 @@ $("#citySearch").click(function(event) {
         }
       )
         .then(function (data) {
-          console.log(data);
-          console.log(data.length === 0);
           if(data.length !== 0) {
             var latitude = data[0].lat;
             var longitude = data[0].lon;
@@ -117,17 +111,9 @@ $("#citySearch").click(function(event) {
   and HTML will be rendered to show the current weather conditions for that city.  */
 
   function getCurrentWeather(latitude, longitude, unit, apiKey, cityName) {
-    console.log("latitude = " + latitude);
-    console.log("longitude = " + longitude);
-    console.log("unit = " + unit);
-    console.log("apiKey = " + apiKey);
-    console.log("cityName = " + cityName);
     const requestUrlCurrentDay = "https://api.openweathermap.org/data/2.5/weather?lat=" + latitude + "&lon=" + longitude + "&units=" + unit + "&appid=" + apiKey;
-    
     currentConditionsEl.empty();
-
     fetch(requestUrlCurrentDay)
-
       .then(function (response) {
         if (response.status !== 200) {
           $('.response').append(responseTextEl);
@@ -141,20 +127,14 @@ $("#citySearch").click(function(event) {
           return response.json();
         }
       )
-
       .then(function (data) {
           init();
           if(data) {
-
-          
           var currentTemp = data.main.temp;
           var currentWind = data.wind.speed;
           var currentHumidity = data.main.humidity;
           var currentWeatherIcon = data.weather[0].icon;
-          
           var currentWeatherIconURL = "http://openweathermap.org/img/wn/" + currentWeatherIcon + "@2x.png";
-         
-          console.log(cityName);
           currentConditionsEl.append(`
           <div class="col-md">
               <div class = "card card-current">
@@ -190,13 +170,13 @@ $("#citySearch").click(function(event) {
       .then(function (response) {
         
       /* Since it shows the weather forecast for every 3 hours, the if statement will 
-      ensure that only data points at 12:00:00 are picked up each day.  Index goes to 40
-      on the for loop since there are 8 3-hour periods per day x 5 days = 40. */
+      ensure that only data points at 18:00:00 GMT (13:00:00 / 1PM Eastern Standard Time) are picked up each day.  
+      Index goes to 40 on the for loop since there are 8 3-hour periods per day x 5 days = 40. */
       
         for (var i = 0; i < 40; i++) {
             
-            if (response.list[i].dt_txt.includes("12:00:00")) {
-                   
+            if (response.list[i].dt_txt.includes("18:00:00")) {
+              
                 var forecastDate = dayjs.unix(response.list[i].dt).format('MMM D');
                 var temp = response.list[i].main.temp;
                 var wind = response.list[i].wind.speed;
