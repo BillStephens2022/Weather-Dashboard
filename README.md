@@ -6,6 +6,8 @@ This website is a Weather Dashboard which allows a user to enter a city into an 
 
 Screenshot:
 
+![Screen Shot 2022-12-07 at 3 59 28 PM](https://user-images.githubusercontent.com/113722447/206301649-8b9223fb-1875-4ce5-b87d-8eb4ecfaed78.png)
+
 Below is the Acceptance Criteria for this project:
 
 Acceptance Criteria
