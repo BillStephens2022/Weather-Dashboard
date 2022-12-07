@@ -16,34 +16,59 @@ var buttonsEl = ("#buttons");
 /* declare variable for cities array which will be saved to local storage and rendered into buttons so the user
 can easily pull up weather conditions for their favorite cities.  */
 
-var cities = [];
+var cities = getLocalStorage();
+
+var storedCities = JSON.parse(localStorage.getItem("cities"));
+
+
+init();
 
 //Clicking on the search button will trigger pull to the Open Weather API to get both current weather and forecast
 $("#citySearch").click(function(event) {
     event.preventDefault();
     var cityName = $('#cityName').val().trim();
+    if (!cities.includes(cityName)) {
+      cities.push(cityName);
+      if (cities.length > 5) {
+        cities.shift();
+      };
+    };
+    cities.push[cityName];
+    localStorage.setItem("cities", JSON.stringify(cities));
+    storedCities = JSON.parse(localStorage.getItem("cities"));
     getCurrentWeather(cityName, unit, apiKey);
     getFiveDayForecast(cityName, unit, apiKey);
   });
 
+  function init() {
+    createButtons();
+  }
+
+  function getLocalStorage() {
+    return JSON.parse(localStorage.getItem("cities")) || [];
+  };
+
   // function to render buttons as user adds new cities
   function createButtons() {
     $('#buttons').empty();
-    for (var i = 0; i < cities.length; i++) {
-      var cityButton = $("<button>");
-      cityButton.addClass("btn city-btn");
-      cityButton.attr('data-name', cities[i]);
-      cityButton.text(cities[i]);
-      $('#buttons').append(cityButton);
+    if (storedCities !== null) {
+      for (var i = 0; i < storedCities.length; i++) {
+        var cityButton = $("<button>");
+        cityButton.addClass("btn city-btn");
+        cityButton.text(storedCities[i]);
+        $('#buttons').append(cityButton);
+      };
+    } else {
+        return;
     };
   }
+  
 
   // function to handle clicks on each of the cities' rendered buttons
   
   $(buttonsEl).on('click', function(event) {
     event.preventDefault();
     var cityButtonPressed = event.target.textContent;
-    console.log(cityButtonPressed);
     getCurrentWeather(cityButtonPressed, unit, apiKey);
     getFiveDayForecast(cityButtonPressed, unit, apiKey);
   });
@@ -55,6 +80,7 @@ $("#citySearch").click(function(event) {
   function getCurrentWeather(cityName, unit, apiKey) {
     
     const requestUrlCurrentDay = "https://api.openweathermap.org/data/2.5/weather?q=" + cityName + "&units=" + unit + "&appid=" + apiKey;
+    
     currentConditionsEl.empty();
 
     fetch(requestUrlCurrentDay)
@@ -63,24 +89,21 @@ $("#citySearch").click(function(event) {
         if (response.status !== 200) {
           $('.response').append(responseTextEl);
           responseTextEl.text("Input Error!  Please enter a valid city");
-          
+          cities.pop();
+          storedCities.pop();
+          init();
         } else {
           responseTextEl.empty();
-          if (!cities.includes(cityName)) {
-            cities.push(cityName);
-            if (cities.length > 5) {
-              cities.shift();
-            };
-            createButtons();
           };
-          
           return response.json();
         }
-      })
+      )
 
       .then(function (data) {
+          init();
           if(data) {
 
+          
           var currentTemp = data.main.temp;
           var currentWind = data.wind.speed;
           var currentHumidity = data.main.humidity;
@@ -103,9 +126,6 @@ $("#citySearch").click(function(event) {
           `);
         }
       });
-      
-      
-      
   }
 
   /* function to fetch data from the Open Weather API. This pulls 16 day forecast, and for loop will render HTML to
